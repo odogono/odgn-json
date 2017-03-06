@@ -13,9 +13,13 @@ const Parser = require('../lib/parser');
 test.only('parser', t => {
 
     const tests = [
+        
         [ [ '{', 'msg', 'hello', '}' ], 
             { msg:'hello'} , 'key value', {debug:false}],
         
+        [ [ 'welcome', ':', 'home' ], 
+            ['welcome', ':', 'home'] , 'single values', {debug:false, log:false}],
+            
         [ [ '{', 'msg', ':', 'hello', 'date', ':', 'today', '}'], 
             {msg:'hello', date:'today'}, 'multiple pair object', {debug:false}],
         
