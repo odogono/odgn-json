@@ -13,24 +13,25 @@ const Parser = require('../lib/parser');
 test.only('parser', t => {
 
     const tests = [
-        [ [ '{', 'msg', ':', 'hello', '}' ], 
-            { msg:'hello'} , 'key value', {debug:true}],
+        [ [ '{', 'msg', 'hello', '}' ], 
+            { msg:'hello'} , 'key value', {debug:false}],
         
-        // [ [ '{', 'msg', ':', 'hello', 'date', ':', 'today', '}'], 
-        //     {msg:'hello', date:'today'}, 'multiple pair object', {debug:false}],
+        [ [ '{', 'msg', ':', 'hello', 'date', ':', 'today', '}'], 
+            {msg:'hello', date:'today'}, 'multiple pair object', {debug:false}],
         
-        // [ [ '[', true, false, null, 25, 0.25, ']' ], 
-        //     [ true, false, null, 25, 0.25, ],  'an array of values', {debug:false}],
+        [ [ '[', true, false, null, 25, 0.25, ']' ], 
+            [ true, false, null, 25, 0.25, ],  'an array of values', {debug:false}],
 
-        // [ [ '{', 'msg', ':', 'hello', '}', '{', 'active', ':', true, '}' ], 
-        //     [ {msg:'hello'}, {active:true} ], 'multiple objects', {debug:false}],
-        
-        // [
-        //     [ '[', 0, 0.1, 1, 20, 0.002, 200000000000000000000, 0.02, 200, 10, 12345, 67890, 123455.123445, ']' ], 
-        //     [ 0, 0.1, 1, 20, 0.002, 200000000000000000000, 0.02, 200, 10, 12345, 67890, 123455.123445 ],
+        [ [ '{', 'msg', ':', 'hello', '}', '{', 'active', ':', true, '}' ], 
+            [ {msg:'hello'}, {active:true} ], 'multiple objects', {debug:false}],
 
-        //     'good numbers',  {debug:false} 
-        // ],
+        [ [ '{', 'msg', 'hello', 'record', ':', '{', 'active', ':', false, '}', '}' ], 
+            { msg: 'hello', record: { active: false } }, 
+            'nested object', {debug:false}],
+        
+        [ [ '[', 'alpha', '[', 'beta', '[', 'gamma', ']', ']', ']' ], 
+            [ 'alpha', [ 'beta', [ 'gamma' ] ] ], 
+            'nested array', {debug:false}],
 
     ];
 
@@ -53,15 +54,31 @@ function applyParser( t, input, expected, msg, options={}, cb ){
         Parser(options),
         
         Pull.collect( (err, array) => {
-            console.log('[Pull.collect]', [].concat.apply([], array) );
             if( !Array.isArray(expected) ){
                 array = array.length ? array[0] : array;
             }
-            array = [].concat.apply([], array);
-
+            
+            if( Array.isArray(array) ){
+                array = [].concat.apply([], array);
+            }
+            
+            // console.log('[Pull.collect]', array );
+            
             t.deepEqual( array, expected, msg );
             
             if( cb ){ cb(); }
         })
     );
+}
+
+
+
+function logger (read) {
+  //return a readable function!
+  return function (end, cb) {
+    read(end, function (end, data) {
+        console.log('[logger]', !!end, data);
+        cb(end, data);
+    })
+  }
 }
