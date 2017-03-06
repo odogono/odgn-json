@@ -58,6 +58,8 @@ test.only('tokenizer', t => {
 
         ['[ 1, 2, 3, ]', [ '[', 1, 2, 3, ']' ], 'array trailing comma', {debug:false}],
 
+        ['[ , , , ]', [ '[', ']' ], 'empty array', {debug:false}],
+
         [
             '[ 0, 0.1, 0.1e1, 0.2e+2, 0.2e-2, 2E20, 2E-2, 2E+2, 10, 12345, 67890, 123455.123445]', 
             [ '[', 0, 0.1, 1, 20, 0.002, 200000000000000000000, 0.02, 200, 10, 12345, 67890, 123455.123445, ']' ], 
@@ -66,9 +68,21 @@ test.only('tokenizer', t => {
 
         [ ["{\n /","/ this is the comment","\n  lie: cake\n }"], [ '{', 'lie', ':', 'cake', '}' ], 'single line comment', {debug:false}],
 
+        [ ["{\n  unicorn: /","*\n ❤\n *", "/ cake\n }"], [ '{', 'unicorn', ':', 'cake', '}' ], 'multiline comment', {debug:false}],
+
+        [ '[\n "first", # "second"\n "third", "#fourth"]',
+            [ '[', 'first', 'third', '#fourth', ']' ],
+            'hash comments', {debug:false}],
+
         [ ['{\n    "firstName": "John"}'], [ '{', 'firstName', ':', 'John', '}' ], 'tab/space object', {debug:false}],
 
-        [ ["{\n  unicorn: /","*\n ❤\n *", "/ cake\n }"], [ '{', 'unicorn', ':', 'cake', '}' ], 'multiline comment', {debug:false}],
+        [ ['[   goodness   ', ' , me ]'], 
+            [ [ '[', 0 ], [ 'goodness', 4 ], [ 'me', 18 ], [ ']', 21 ] ], 
+            'included positions', {debug:false, includePosition:true} ],
+        
+        [ ["{\n /","/ this is the comment","\n  lie: cake\n }"], 
+            [[ '{', 0 ], [ 'lie', 24 ], [ ':', 31 ], [ 'cake', 33 ], [ '}', 39 ]], 
+            'single line comment', {debug:false, includePosition:true}],
     ];
 
     t.plan(tests.length);
