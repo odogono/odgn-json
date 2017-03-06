@@ -1,0 +1,19 @@
+{
+  "name": "odgn-json",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pull-file": "^1.0.0",
+    "pull-stream": "^3.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.0",
+    "tape": "^4.6.3"
+  }
+}
