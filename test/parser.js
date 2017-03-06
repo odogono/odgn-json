@@ -33,6 +33,18 @@ test.only('parser', t => {
             [ 'alpha', [ 'beta', [ 'gamma' ] ] ], 
             'nested array', {debug:false}],
 
+        [ [ '{', 'msg', 'hello', '}', '[', 'alpha', ']' ],
+            [ { msg: 'hello' }, [ 'alpha' ] ] , 
+            'object then array', {debug:false}],
+
+        [ [ '}', '[', 'sing', ']' ],
+            // [ new Error('Unexpected token } in JSON'), [ 'sing' ] ],
+            [ { message: 'Unexpected token } in JSON', name: 'Error' }, [ 'sing' ] ],
+            'invalid token', {debug:false, log:false} ],
+
+        [ [ ['}',4] ],
+            { message: 'Unexpected token } in JSON at position 4', name: 'Error' },
+            'unexpected token with position', {debug:false, log:false} ],
     ];
 
     t.plan(tests.length);
@@ -46,23 +58,43 @@ test.only('parser', t => {
 
 
 function applyParser( t, input, expected, msg, options={}, cb ){
+    const debug = !!options.debug;
     input = Array.isArray(input) ? input : [input];
     
-    Pull( 
+    Pull(
+        // a source which convert the input array into a stream of values
         Pull.values(input),
-        // logger,
+        
+        // the parser converts incoming tokens into objects or arrays
         Parser(options),
         
+        // converts any Error instances into objects (for test purposes)
+        errorToObject,
+
+        // ((options.debug||options.log) && logger),
+
+        // Pull.drain( (options.debug && console.log) )
+
+        // a sink which drains the stream into an array
         Pull.collect( (err, array) => {
-            if( !Array.isArray(expected) ){
-                array = array.length ? array[0] : array;
+
+            if( err ){
+                console.log('[Pull.collect] error', err);
             }
             
-            if( Array.isArray(array) ){
-                array = [].concat.apply([], array);
+            // flatten the outcome if there is only 1 value
+            if( array.length === 1 ){
+                array = array[0];
             }
-            
-            // console.log('[Pull.collect]', array );
+
+            if( array instanceof Error ){
+                if( options.debug ){ 
+                    console.log('[Pull.collect] error', array.message );
+                }
+            }
+            if( options.debug ){ 
+                console.log('[Pull.collect]', array );
+            }
             
             t.deepEqual( array, expected, msg );
             
@@ -72,7 +104,10 @@ function applyParser( t, input, expected, msg, options={}, cb ){
 }
 
 
-
+/**
+ * A through pull-stream which outputs data to console.log
+ * @param {*} read 
+ */
 function logger (read) {
   //return a readable function!
   return function (end, cb) {
@@ -81,4 +116,33 @@ function logger (read) {
         cb(end, data);
     })
   }
+}
+
+/**
+ * A through pull-stream which converts Error instances
+ * into simple objects
+ * 
+ * @param {*} read 
+ */
+function errorToObject(read) {
+    return function(end, cb) {
+        read(end, function (end, data) {
+            if( data != null && isError(data) ){
+                data = {message:data.message, name:data.name};
+            }
+            cb(end, data);
+        })
+    }
+}
+
+
+/**
+ * Returns true if the specified value is an Error
+ * or an Error-a-like
+ * 
+ * @param {*} obj 
+ */
+function isError(obj){
+    return (toString.call(obj) == '[object Error]') ||
+            (typeof obj.message == 'string' && typeof obj.name == 'string');
 }
