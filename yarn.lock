@@ -572,6 +572,10 @@ js-yaml@^3.5.1:
     argparse "^1.0.7"
     esprima "^3.1.1"
 
+json-depth-stream@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/json-depth-stream/-/json-depth-stream-2.2.1.tgz#28cf14df6a0ed8757c9a494a404c8e0b806d43ba"
+
 json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"

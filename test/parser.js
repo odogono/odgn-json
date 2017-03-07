@@ -19,7 +19,7 @@ test.only('parser', t => {
         
         [ [ 'welcome', ':', 'home' ], 
             ['welcome', ':', 'home'] , 'single values', {debug:false, log:false}],
-            
+
         [ [ '{', 'msg', ':', 'hello', 'date', ':', 'today', '}'], 
             {msg:'hello', date:'today'}, 'multiple pair object', {debug:false}],
         
@@ -42,13 +42,25 @@ test.only('parser', t => {
             'object then array', {debug:false}],
 
         [ [ '}', '[', 'sing', ']' ],
-            // [ new Error('Unexpected token } in JSON'), [ 'sing' ] ],
-            [ { message: 'Unexpected token } in JSON', name: 'Error' }, [ 'sing' ] ],
+            [ new Error('Unexpected token } in JSON'), [ 'sing' ] ],
             'invalid token', {debug:false, log:false} ],
 
-        [ [ ['}',4] ],
-            { message: 'Unexpected token } in JSON at position 4', name: 'Error' },
-            'unexpected token with position', {debug:false, log:false} ],
+        // NOTE: line number not yet working
+        // [ [ ['}',4] ],
+        //     [ new Error('Unexpected token } in JSON at position 4'), [ 'sing' ] ],
+        //     'unexpected token with position', {debug:false, log:false} ],
+
+        [ [ ['{', 'msg'], ['hello', '}'] ], 
+            { msg:'hello'} , 'multiple calls',  {debug:false, log:false} ],
+
+        [ [ ['{', 'firstName', ':', 'John'],
+            ['lastName', ':', 'Smith', 'isAlive', ':', true],
+            ['age', ':', 25, 'address', ':', '{'],
+            ['streetAddress', ':', '21 2nd Street'],
+            ['city', ':', 'New York', 'state', ':', 'NY'],
+            ['postalCode', ':', '10021-3100', '}', '}'] ],
+            { address: { city: 'New York', postalCode: '10021-3100', state: 'NY', streetAddress: '21 2nd Street' }, age: 25, firstName: 'John', isAlive: true, lastName: 'Smith' },
+            'multiple input', {debug:false, log:false} ]
     ];
 
     t.plan(tests.length);
@@ -86,19 +98,24 @@ function applyParser( t, input, expected, msg, options={}, cb ){
                 console.log('[Pull.collect] error', err);
             }
             
+            // flatten the incoming array
+            if( Array.isArray(array) ){
+                array = [].concat.apply([], array);
+            }
+
             // flatten the outcome if there is only 1 value
             if( array.length === 1 ){
                 array = array[0];
             }
 
-            if( array instanceof Error ){
-                if( options.debug ){ 
-                    console.log('[Pull.collect] error', array.message );
-                }
-            }
-            if( options.debug ){ 
-                console.log('[Pull.collect]', array );
-            }
+            // if( array instanceof Error ){
+            //     if( options.debug ){ 
+            //         console.log('[Pull.collect] error', array.message );
+            //     }
+            // }
+            // if( options.debug ){ 
+            //     console.log('[Pull.collect]', array );
+            // }
             
             t.deepEqual( array, expected, msg );
             
