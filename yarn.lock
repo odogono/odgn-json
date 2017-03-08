@@ -167,7 +167,7 @@ define-properties@^1.1.2:
     foreach "^2.0.5"
     object-keys "^1.0.8"
 
-defined@~1.0.0:
+defined@^1.0.0, defined@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/defined/-/defined-1.0.0.tgz#c98d9bcef75674188e110969151199e39b1fa693"
 
@@ -572,10 +572,6 @@ js-yaml@^3.5.1:
     argparse "^1.0.7"
     esprima "^3.1.1"
 
-json-depth-stream@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/json-depth-stream/-/json-depth-stream-2.2.1.tgz#28cf14df6a0ed8757c9a494a404c8e0b806d43ba"
-
 json-stable-stringify@^1.0.0, json-stable-stringify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
@@ -601,6 +597,10 @@ lodash@^4.0.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
+looper@^3.0.0, looper@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/looper/-/looper-3.0.0.tgz#2efa54c3b1cbaba9b94aee2e5914b0be57fbb749"
+
 minimatch@^3.0.2:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.3.tgz#2a4e4090b96b2db06a9d7df01055a62a77c9b774"
@@ -611,7 +611,7 @@ minimist@0.0.8:
   version "0.0.8"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-0.0.8.tgz#857fcabfc3397d2625b8228262e86aa7a011b05d"
 
-minimist@~1.2.0:
+minimist@^1.2.0, minimist@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.0.tgz#a35008b20f41383eec1fb914f4cd5df79a264284"
 
@@ -718,9 +718,27 @@ pull-file@^1.0.0:
   dependencies:
     pull-utf8-decoder "^1.0.2"
 
-pull-stream@^3.5.0:
+pull-split@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/pull-split/-/pull-split-0.2.0.tgz#996d288531052209a831388ad0d281df3c823796"
+  dependencies:
+    pull-through "~1.0.6"
+
+pull-stream@^3.2.3, pull-stream@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/pull-stream/-/pull-stream-3.5.0.tgz#1ee5b6f76fd3b3a49a5afb6ded5c0320acb3cfc7"
+
+pull-stringify@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/pull-stringify/-/pull-stringify-2.0.0.tgz#22ba31da95af0888e0fb559238b1fa915a6a5b64"
+  dependencies:
+    defined "^1.0.0"
+
+pull-through@^1.0.18, pull-through@~1.0.6:
+  version "1.0.18"
+  resolved "https://registry.yarnpkg.com/pull-through/-/pull-through-1.0.18.tgz#8dd62314263e59cf5096eafbb127a2b6ef310735"
+  dependencies:
+    looper "~3.0.0"
 
 pull-utf8-decoder@^1.0.2:
   version "1.0.2"
@@ -811,6 +829,13 @@ slice-ansi@0.0.4:
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
+
+stream-to-pull-stream@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/stream-to-pull-stream/-/stream-to-pull-stream-1.7.2.tgz#757609ae1cebd33c7432d4afbe31ff78650b9dde"
+  dependencies:
+    looper "^3.0.0"
+    pull-stream "^3.2.3"
 
 string-width@^1.0.1:
   version "1.0.2"

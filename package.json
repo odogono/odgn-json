@@ -9,11 +9,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "pull-file": "^1.0.0",
-    "pull-stream": "^3.5.0"
+    "minimist": "^1.2.0",
+    "pull-split": "^0.2.0",
+    "pull-stringify": "^2.0.0",
+    "pull-through": "^1.0.18",
+    "pull-utf8-decoder": "^1.0.2",
+    "stream-to-pull-stream": "^1.7.2"
   },
   "devDependencies": {
     "eslint": "^3.17.0",
+    "pull-file": "^1.0.0",
+    "pull-stream": "^3.5.0",
     "tape": "^4.6.3"
+  },
+  "bin": {
+    "odgn-json": "bin/odgn-json.js"
   }
 }
