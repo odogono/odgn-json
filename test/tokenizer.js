@@ -57,6 +57,17 @@ test.only('tokenizer', t => {
             { debug: false }
         ],
         [
+            '{ so why hang around : " for the deed to be done "',
+            [
+                ['{', 0, 0],
+                ['so why hang around', 2, 0],
+                [':', 21, 0],
+                [' for the deed to be done ', 23, 0]
+            ],
+            'spaces within value',
+            { debug: false }
+        ],
+        [
             '{msg : hello, date: today }',
             [
                 ['{', 0, 0],
@@ -75,7 +86,7 @@ test.only('tokenizer', t => {
             ['{\n  first: 1\n  second: 2\n}'],
             [
                 ['{', 0, 0],
-                ['first', 1, 1],
+                ['first', 4, 1],
                 [':', 9, 1],
                 [1, 11, 2],
                 ['second', 15, 2],
@@ -202,13 +213,13 @@ test.only('tokenizer', t => {
             { debug: false }
         ],
         [
-            ['{\n /', '/ this is the comment', '\n  lie: cake\n }'],
+            ['{\n /', '/ lets not go home', '\n  divided: by\n }'],
             [
                 ['{', 0, 0],
-                ['lie', 24, 2],
-                [':', 31, 2],
-                ['cake', 33, 3],
-                ['}', 39, 3]
+                ['divided', 25, 2],
+                [':', 32, 2],
+                ['by', 34, 3],
+                ['}', 38, 3]
             ],
             'single line comment',
             { debug: false }
@@ -217,7 +228,7 @@ test.only('tokenizer', t => {
             ['{\n  unicorn: /', '*\n ❤\n *', '/ cake\n }'],
             [
                 ['{', 0, 0],
-                ['unicorn', 1, 1],
+                ['unicorn', 4, 1],
                 [':', 11, 1],
                 ['cake', 23, 4],
                 ['}', 29, 4]
@@ -241,7 +252,7 @@ test.only('tokenizer', t => {
             ['{\n    "firstName": "John"}'],
             [
                 ['{', 0, 0],
-                ['firstName', 1, 1],
+                ['firstName', 6, 1],
                 [':', 17, 1],
                 ['John', 19, 1],
                 ['}', 25, 1]
@@ -256,13 +267,13 @@ test.only('tokenizer', t => {
             { debug: false }
         ],
         [
-            ['{\n /', '/ this is the comment', '\n  lie: cake\n }'],
+            ['{\n /', "/ we'll catch a plane to New York", '\n  run: away\n }'],
             [
                 ['{', 0, 0],
-                ['lie', 24, 2],
-                [':', 31, 2],
-                ['cake', 33, 3],
-                ['}', 39, 3]
+                ['run', 40, 2],
+                [':', 43, 2],
+                ['away', 45, 3],
+                ['}', 51, 3]
             ],
             'single line comment',
             { debug: false }
@@ -277,10 +288,10 @@ test.only('tokenizer', t => {
                 ['{', 0, 0],
                 ['message', 2, 0],
                 [':', 9, 0],
-                ['\nthese violent delights\nhave\nviolent ends', 17, 3],
-                ['ok', 59, 4],
+                ['\nthese violent delights\nhave\nviolent ends', 12, 3],
+                ['ok', 61, 4],
                 [':', 63, 4],
-                [true, 65, 4],
+                ['true', 64, 4],
                 ['err', 71, 4],
                 [':', 74, 4],
                 [null, 75, 4],
@@ -293,6 +304,20 @@ test.only('tokenizer', t => {
             'msg  :  hello\n',
             [['msg', 0, 0], [':', 5, 0], ['hello', 8, 1]],
             'naked key value',
+            { debug: false }
+        ],
+        [
+            [
+                `// the following line contains trailing whitespace:
+foo: 0 -- this string starts`,
+                `at 0 and ends at 1, preceding and trailing whitespace is ignored -- 1 `
+            ],
+            [
+                ['foo', 52, 1],
+                [':', 55, 1],
+                ['0 -- this string startsat 0 and ends at 1', 57, 1]
+            ],
+            'escaped values',
             { debug: false }
         ]
     ];
