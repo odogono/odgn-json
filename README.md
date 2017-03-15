@@ -1,6 +1,6 @@
 # ODGN JSON
 
-A through [pull-stream](https://pull-stream.github.io/) that converts incoming string data into a stream of JSON objects and arrays - concatenated JSON.
+An through [pull-stream](https://pull-stream.github.io/) that converts incoming string data into a stream of JSON objects and arrays - concatenated JSON.
 
 Because the world needs more JSON parsers.
 
