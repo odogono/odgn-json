@@ -4,6 +4,7 @@ const Path = require('path');
 const inputFile = Path.resolve(__dirname, './fixtures/features.odgnjson');
 const test = require('tape');
 const PullLog = require('pull-stream/sinks/log');
+const PullMap = require('pull-stream/throughs/map');
 
 const PullCollect = require('pull-stream/sinks/collect');
 const PullOnce = require('pull-stream/sources/once');
@@ -36,7 +37,7 @@ test('tldr', async t => {
         machine: JSON
     }`;
 
-    const result = await parse(src);
+    const result = await parse(src, {debug:false});
 
     t.deepEqual(result, { human: 'Hjson', machine: 'JSON' });
 
@@ -74,7 +75,7 @@ test('strings without quotes', async t => {
     Hjson: a string
 
     # notice, no escape necessary:
-    RegEx: \s+
+    RegEx: \\s+
     }`;
 
     const result = await parse(src);
@@ -85,15 +86,14 @@ test('strings without quotes', async t => {
 });
 
 test('multiline', async t => {
-    const src = `
-{
-md:
-    '''
-    First line.
-    Second line.
-      This line is indented by two spaces.
-    '''
-}`;
+    const src = `{
+        md:
+            '''
+            First line.
+            Second line.
+              This line is indented by two spaces.
+            '''
+        }`;
 
     const result = await parse(src);
 
@@ -109,7 +109,7 @@ test('Punctuators, Spaces and Escapes', async t => {
     {
         "key name": "{ sample }"
         "{}": " spaces at the start/end "
-        this: is OK though: {}[],:
+        this: "is OK though: {}[],:"
     }`;
 
     const result = await parse(src);
@@ -147,12 +147,22 @@ test('multi line', async t => {
     t.end();
 });
 
-function parse(str) {
+function parse(str, options={}) {
     return new Promise((resolve, reject) => {
         Pull(
             // stringSource(str),
             PullOnce(str),
-            odgnJSON({ debug: false }),
+
+            options.debug &&
+                PullMap(val => {
+                    console.log('[map]', val);
+                    return val;
+                }),
+
+            odgnJSON(options),
+
+            
+
             // PullCollect( result => resolve(result) )
             stringSink(result => resolve(result))
         );

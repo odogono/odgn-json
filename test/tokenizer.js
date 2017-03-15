@@ -8,27 +8,26 @@ const PullMap = require('pull-stream/throughs/map');
 
 const Tokenizer = require('../lib/tokenizer');
 
-// test('readAhead', t => {
-//     const tests = [
-//         [ 'this is a key : this is the value', ":", "this is a key " ],
-//         [ '"this: is a key" : this is the value', ":", '"this: is a key" ', {debug:false} ],
-//         [ "this is the value\nthis is the key", "\n", "this is the value", {debug:true} ],
-//     ];
+test('leftTrimMax', t => {
+    t.equal(trimLeftMax('hello'), 'hello');
+    t.equal(trimLeftMax('   hello'), 'hello');
+    t.equal(trimLeftMax('   hello', 1), '  hello');
+    t.equal(trimLeftMax('   hello', 3), 'hello');
+    t.equal(
+        trimLeftMax('                    I will fill your empty half.', 18),
+        '  I will fill your empty half.'
+    );
+    t.end();
+});
 
-//     tests.forEach( tcase => {
-//         const [input,terminators,expected,options] = tcase;
-//         debugLog = options && !!options.debug;
-//         let context = {input,pos:0,len:input.length,buffer:''};
-
-//         const finishOn = readAhead(context,terminators);
-
-//         Log('test', input, 'context:', context, 'finishOn', finishOn);
-
-//         t.equals(context.buffer, expected);
-//     } )
-
-//     t.end();
-// });
+function trimLeftMax(str, offset = str.length) {
+    let ws = /\s/, ii = 0;
+    while (ii <= offset && ws.test(str.charAt((ii++)))) {
+        // console.log('trimLeftMax', ii-1, offset, str.charAt(ii-1)+'F' );
+    }
+    // console.log('== trimLeftMax', 'finish', ii, offset, str.substring(ii-1) );
+    return str.substring(ii - 1);
+}
 
 test.only('tokenizer', t => {
     const tests = [
@@ -41,6 +40,7 @@ test.only('tokenizer', t => {
                 ['hello', 8, 0],
                 ['}', 14, 0]
             ],
+            // unquoted strings contain everything up to the next line!
             'unquoted object pair',
             { debug: false }
         ],
@@ -98,7 +98,7 @@ test.only('tokenizer', t => {
             { debug: false }
         ],
         [
-            '{favNumbers : [1,2,[ true, false ], {weather:raining}], active:true }',
+            '{favNumbers : [1,2,[ true, false ], {weather:raining heavily}], active:true }',
             [
                 ['{', 0, 0],
                 ['favNumbers', 1, 0],
@@ -113,13 +113,13 @@ test.only('tokenizer', t => {
                 ['{', 36, 0],
                 ['weather', 37, 0],
                 [':', 44, 0],
-                ['raining', 45, 0],
-                ['}', 52, 0],
-                [']', 53, 0],
-                ['active', 56, 0],
-                [':', 62, 0],
-                [true, 63, 0],
-                ['}', 68, 0]
+                ['raining heavily', 45, 0],
+                ['}', 60, 0],
+                [']', 61, 0],
+                ['active', 64, 0],
+                [':', 70, 0],
+                [true, 71, 0],
+                ['}', 76, 0]
             ],
             'array value',
             { debug: false }
@@ -288,7 +288,7 @@ test.only('tokenizer', t => {
                 ['{', 0, 0],
                 ['message', 2, 0],
                 [':', 9, 0],
-                ['\nthese violent delights\nhave\nviolent ends', 12, 3],
+                ['these violent delights\nhave\nviolent ends', 12, 3],
                 ['ok', 61, 4],
                 [':', 63, 4],
                 ['true', 64, 4],
@@ -318,6 +318,63 @@ foo: 0 -- this string starts`,
                 ['0 -- this string startsat 0 and ends at 1', 57, 1]
             ],
             'escaped values',
+            { debug: false }
+        ],
+        [
+            `{
+                # TL;DR
+                human:   Hjson
+                machine: JSON
+            }`,
+            [
+                ['{', 0, 0],
+                ['human', 42, 2],
+                [':', 47, 2],
+                ['Hjson', 51, 3],
+                ['machine', 73, 3],
+                [':', 80, 3],
+                ['JSON', 82, 4],
+                ['}', 99, 4]
+            ],
+            'tldr',
+            { debug: false }
+        ],
+        [
+            // ''' defines the head, on the following lines all whitespace up to this column is ignored
+            `haiku:
+                '''
+                My half empty glass,
+                  I will fill your empty half.
+                Now you are half full.
+                '''`,
+            [
+                ['haiku', 0, 0],
+                [':', 5, 0],
+                [
+                    'My half empty glass,\n  I will fill your empty half.\nNow you are half full.',
+                    23,
+                    5
+                ]
+            ],
+            'haiku',
+            { debug: false }
+        ],
+        [
+            // NOTE: this behaviour diverges from Hjson
+            // it tokenises, but will clearly fail on parsing
+            'this: is OK though: {}[],:',
+            [
+                ['this', 0, 0],
+                [':', 4, 0],
+                ['is OK though', 6, 0],
+                [':', 18, 0],
+                ['{', 20, 0],
+                ['}', 21, 0],
+                ['[', 22, 0],
+                [']', 23, 0],
+                [':', 25, 0]
+            ],
+            'puncuators in a string',
             { debug: false }
         ]
     ];
