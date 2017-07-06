@@ -1,13 +1,17 @@
 {
   "name": "odgn-json",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "test": "node test/main.js"
   },
-  "author": "",
-  "license": "ISC",
+  "directories":{
+    "bin": "bin",
+    "lib": "lib"
+  },
+  "author": "Alexander Veenendaal <alex@opendoorgonorth.com>",
+  "license": "MIT",
   "dependencies": {
     "minimist": "^1.2.0",
     "pull-split": "^0.2.0",

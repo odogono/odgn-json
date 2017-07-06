@@ -1,10 +1,25 @@
-# ODGN JSON
+# odgn-json
 
 An through [pull-stream](https://pull-stream.github.io/) that converts incoming string data into a stream of JSON objects and arrays - concatenated JSON.
 
 Because the world needs more JSON parsers.
 
-https://github.com/pull-stream/pull-stream/blob/master/docs/spec.md
+
+## Usage
+
+```
+const src = `{
+    # TL;DR
+    fancy:   odgn-json
+    machine: JSON
+}`;
+
+const result = await parse(src, {debug:false});
+
+
+```
+
+### TODO
 
 
 ### Related
@@ -19,5 +34,7 @@ https://github.com/indutny/json-depth-stream
 
 https://github.com/creationix/jsonparse
 
-TODO:
+https://github.com/pull-stream/pull-stream/blob/master/docs/spec.md
+
+
 
