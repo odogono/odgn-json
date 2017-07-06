@@ -1,7 +1,7 @@
 {
   "name": "odgn-json",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.2.0",
+  "description": "a through pull-stream that converts strings into objects and arrays",
   "main": "lib/index.js",
   "scripts": {
     "test": "node test/main.js"

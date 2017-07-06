@@ -20,6 +20,7 @@ var/
 
 TODO.md
 NOTES.md
+blog.md
 
 .flowconfig
 .vscode
@@ -27,3 +28,4 @@ NOTES.md
 yarn.lock
 jsconfig.json
 rollup.config*§
+gated.js

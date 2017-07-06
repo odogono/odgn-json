@@ -1,0 +1,40 @@
+// Extended-JSON definition for elsinore commands
+
+// Room Component
+{
+    "@cmd": "register",
+    "uri": "/component/room",
+    "description": "this is the { description
+ which wierdly can carry on to other lines",
+
+    // These are the properties
+    "properties":{
+        "width":{ "type": "integer" },
+        "height":{ "type": "integer" },
+    },
+}
+
+
+// Texture component
+{ 
+    "@cmd":"register", 
+    "uri":"/component/texture", 
+    "properties":{
+            "name":{ "type":"string" },
+            "url":{ "type":"string" },
+            "width":{ "type": "integer" },
+            "height":{ "type": "integer" },
+            "active":{ "type": "boolean" },
+            "obj":{ "type": "object", "description":"reference to threejs texture object"}
+        }
+}
+
+
+# Register the first room entity
+{ "@cmd":"create-entity" }
+{ "@uri":"/component/room", "active":true, "width":10, "height":13 }
+{ "@uri":"/component/texture", "active":true, "url":"img/level1.png" }
+
+
+// [ "some", "other", "things can \"be done " ]
+// and that is how we do!
